@@ -1,0 +1,21 @@
+{
+  "name": "Buy-side Counsel View (example)",
+  "overrides": {
+    "core": {
+      "closeoutMethodology": {
+        "closeOutAmount2002": "buyside"
+      },
+      "aet": {
+        "yes": { "favorsA": "dealer", "favorsB": "buyside" }
+      }
+    },
+    "attachments": {
+      "haircutLevel": {
+        "aggressive": "neutral"
+      },
+      "valuationAgent": {
+        "dealerSole": "buyside"
+      }
+    }
+  }
+}

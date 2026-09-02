@@ -28,8 +28,12 @@ Two of this app's features are built around user-supplied JSON files:
 - **Import Guardrails** — a tiered preferred/fallback negotiating position that live-flags the board as you edit
 - **Import Favorability Ruleset** — overrides this tool's own dealer/buy-side/neutral view per clause, changing how it actually scores
 
-See [isda-favorability-rulesets](https://github.com/QuetzyPesty/isda-favorability-rulesets) for the favorability ruleset format, a ready-to-edit template, and an example.
+See [`favorability-rulesets/`](favorability-rulesets/) in this repo for the favorability ruleset format, a ready-to-edit template, and an example.
 
 ## Disclaimer
 
 Partially-parodical, arguably educational. Not legal advice, not a substitute for counsel. Clause overviews are indicative and may be inspired by publicly available executed ISDAs.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

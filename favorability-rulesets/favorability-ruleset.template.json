@@ -1,0 +1,309 @@
+{
+  "name": "Template \u2014 built-in view (edit me)",
+  "overrides": {
+    "frame": {
+      "governingLaw": {
+        "NY": "neutral",
+        "English": "neutral",
+        "Irish": "neutral",
+        "French": "neutral",
+        "Japanese": "neutral",
+        "Indian": "neutral"
+      },
+      "multibranch": {
+        "yes": "dealer",
+        "no": "buyside"
+      },
+      "paymentNetting": {
+        "all": "dealer",
+        "sameCurrency": "neutral",
+        "none": "buyside"
+      },
+      "disputeResolution": {
+        "nyExclusive": "neutral",
+        "nyNonExclusive": "neutral",
+        "londonExclusive": "neutral",
+        "londonNonExclusive": "neutral",
+        "arbitrationLCIA": "buyside",
+        "indianCourtsExclusive": "neutral",
+        "indianArbitration": "neutral"
+      },
+      "transferAssignment": {
+        "mutualConsent": "neutral",
+        "consentWithDeemedTimer": "dealer",
+        "dealerFreeOnAffiliate": "dealer",
+        "counterpartyConsentAlways": "buyside"
+      },
+      "sovereignImmunityWaiver": {
+        "fullWaiver": "dealer",
+        "limitedWaiverCentralBankCarveout": "buyside",
+        "noWaiver": "buyside"
+      }
+    },
+    "core": {
+      "crossDefaultType": {
+        "defaultOnly": "buyside",
+        "defaultOrAcceleration": "dealer"
+      },
+      "specifiedIndebtednessScope": {
+        "broad": "dealer",
+        "standardBankingCarveout": "neutral",
+        "fundFinancingCarveout": "buyside"
+      },
+      "specifiedEntities": {
+        "none": "buyside",
+        "namedSubs": "neutral",
+        "csProvidersOnly": "dealer",
+        "allAffiliates": "dealer"
+      },
+      "ates": {
+        "navDecline": "dealer",
+        "keyPerson": "dealer",
+        "downgrade": "dealer"
+      },
+      "bankruptcyCarveout": {
+        "standardUnmodified": "neutral",
+        "compressedGracePeriod": "dealer",
+        "regulatedEntityCarveout": "buyside"
+      },
+      "aet": {
+        "yes": {
+          "favorsA": "buyside",
+          "favorsB": "dealer"
+        },
+        "no": {
+          "favorsA": "dealer",
+          "favorsB": "buyside"
+        }
+      },
+      "creditEventUponMerger": {
+        "notApplicable": "buyside",
+        "bothParties": "neutral",
+        "counterpartyOnly": "dealer"
+      },
+      "taxEventUponMerger": {
+        "applicable": "neutral",
+        "excluded": "buyside"
+      },
+      "terminationCurrency": {
+        "USD": "neutral",
+        "EUR": "neutral",
+        "GBP": "neutral",
+        "baseCurrency": "neutral"
+      },
+      "closeoutMethodology": {
+        "closeOutAmount2002": "neutral",
+        "marketQuotation1992": "buyside",
+        "loss1992": "dealer"
+      },
+      "creditSupportProvider": {
+        "none": "neutral",
+        "dealerGuarantorOnly": "buyside",
+        "counterpartyGuarantorOnly": "dealer",
+        "mutualGuarantees": "neutral"
+      },
+      "failureToPayGracePeriod": {
+        "none": "dealer",
+        "operationalCarveout": "buyside"
+      }
+    },
+    "attachments": {
+      "csaStructure": {
+        "vmTitleTransferEnglish": "neutral",
+        "vmPledgeNY": "neutral",
+        "vmImBilateral": "buyside"
+      },
+      "eligibleCollateral": {
+        "cashUSD": "neutral",
+        "cashOther": "neutral",
+        "usTreasuries": "buyside",
+        "nonUSGovt": "buyside",
+        "equities": "buyside",
+        "mmf": "buyside",
+        "inrGSecs": "buyside",
+        "inrCorpBonds": "buyside"
+      },
+      "haircutLevel": {
+        "cashOnlyZero": "buyside",
+        "standard": "neutral",
+        "aggressive": "dealer"
+      },
+      "interestRateCashCollateral": {
+        "sofrFlat": "neutral",
+        "sofrMinusSpread": "dealer",
+        "fedFundsFlat": "neutral"
+      },
+      "valuationAgent": {
+        "dealerSole": "dealer",
+        "jointDisclosed": "neutral",
+        "counterpartyOrThirdParty": "buyside"
+      },
+      "disputeResolutionTiming": {
+        "oneLocalBusinessDay": "neutral",
+        "sameDay": "buyside",
+        "extended": "dealer"
+      },
+      "concentrationLimits": {
+        "none": "buyside",
+        "standard": "neutral",
+        "tight": "dealer"
+      },
+      "demandMechanic": {
+        "onDemand": "neutral",
+        "automatic": "neutral"
+      },
+      "distributionsElection": {
+        "included": "buyside",
+        "excluded": "dealer"
+      },
+      "custodianArrangement": {
+        "none": "dealer",
+        "thirdParty": "neutral",
+        "triParty": "buyside"
+      },
+      "rehypothecationRights": {
+        "full": "dealer",
+        "recallable": "neutral",
+        "none": "buyside"
+      },
+      "substitutionConsent": {
+        "automatic": "buyside",
+        "consentRequired": "neutral",
+        "soleDiscretion": "dealer"
+      },
+      "imCalculationMethod": {
+        "simm": "neutral",
+        "standardizedSchedule": "neutral"
+      },
+      "segregationStructure": {
+        "thirdPartySegregated": "neutral",
+        "triParty": "buyside"
+      },
+      "custodianApproval": {
+        "mutualConsent": "buyside",
+        "securedPartyDiscretion": "dealer"
+      }
+    },
+    "edge": {
+      "taxReps": {
+        "fatca": "neutral",
+        "s871m": "neutral",
+        "s195India": "neutral"
+      },
+      "grossUp": {
+        "yes": "buyside",
+        "no": "dealer"
+      },
+      "documentsDelivered": {
+        "taxForms": "neutral",
+        "boardRes": "neutral",
+        "legalOpinion": "neutral",
+        "csDocs": "neutral",
+        "processAgentLetter": "neutral",
+        "financialStatements": "neutral"
+      },
+      "calcAgent": {
+        "dealerSole": "dealer",
+        "counterpartySole": "buyside",
+        "joint": "neutral",
+        "thirdParty": "buyside"
+      },
+      "defaultInterestSpread": {
+        "standard1pct": "neutral",
+        "symmetricNegotiated": "buyside",
+        "asymmetricCostOfFunds": "dealer"
+      },
+      "protocolAdherence": {
+        "vm2016": "neutral",
+        "iborFallbacks": "neutral",
+        "resolutionStay": "neutral",
+        "masterAgreementProtocol2002": "neutral",
+        "emirRiskMitigation": "neutral"
+      },
+      "resolutionStayRecognition": {
+        "fullContractualStay": "dealer",
+        "regulatoryMinimumOnly": "buyside",
+        "notApplicable": "neutral"
+      },
+      "confirmationMethod": {
+        "electronicPlatform": "neutral",
+        "paper": "neutral"
+      },
+      "portfolioCompression": {
+        "consentRequired": "buyside",
+        "automaticParticipation": "neutral",
+        "dealerDiscretion": "dealer"
+      },
+      "noticeMethodCloseout": {
+        "emailValidForAll": "neutral",
+        "emailExcludedForCloseout": "dealer"
+      },
+      "escrowNonSimultaneous": {
+        "available": "neutral",
+        "notAvailable": "neutral"
+      }
+    },
+    "inserts": {
+      "sanctionsAML": {
+        "none": "neutral",
+        "standard": "neutral",
+        "enhanced": "dealer"
+      },
+      "setoff": {
+        "none": "buyside",
+        "narrow": "neutral",
+        "broadWithClientAssetCarveout": "dealer",
+        "broad": "dealer"
+      },
+      "illegalityFM": {
+        "0": "dealer",
+        "3": "neutral",
+        "8": "buyside"
+      },
+      "illegalityDesignationRight": {
+        "eitherAffectedPartyDesignates": "neutral",
+        "nonAffectedPartyControls": "dealer"
+      },
+      "regulatoryOverlay": {
+        "none": "neutral",
+        "indiaOnshore": "neutral",
+        "giftCity": "neutral",
+        "emirEU": "neutral",
+        "doddFrank": "neutral"
+      },
+      "femaCollateralApproval": {
+        "notApplicable": "neutral",
+        "generalPermission": "neutral",
+        "specificApproval": "neutral",
+        "pending": "neutral"
+      },
+      "confidentiality": {
+        "none": "dealer",
+        "mutual": "neutral",
+        "oneWayProtectsCounterparty": "buyside"
+      },
+      "recordingConsent": {
+        "required": "dealer",
+        "notRequired": "buyside"
+      },
+      "nonRelianceECP": {
+        "none": "buyside",
+        "standard": "dealer"
+      },
+      "noAgencyRepresentation": {
+        "includedStandard": "neutral",
+        "carvedOutForAgencyStructures": "buyside"
+      },
+      "fishOrCutBait": {
+        "none": "dealer",
+        "reasonable": "neutral",
+        "fixedWindow": "buyside"
+      },
+      "mostFavoredNation": {
+        "none": "dealer",
+        "pricingOnly": "neutral",
+        "broad": "buyside"
+      }
+    }
+  }
+}
