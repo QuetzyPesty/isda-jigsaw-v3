@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ISDA Master Agreement Jigsaw v3</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="disclaimer-banner">⚠️ Partially-parodical, arguably educational tool — not advice of any sort whatsoever, not a substitute for counsel, exercise judgement. Clause overviews are merely indicative and are possibly  inspired by publicly available executed ISDAs.</div>
+<header class="topbar">
+  <div class="topbar-left">
+    <h1>ISDA Master Agreement Jigsaw <span class="version-badge">v3</span></h1>
+    <span class="subtitle">Schedule &amp; CSA Configuration Planner</span>
+  </div>
+  <div class="topbar-controls">
+    <label class="preset-label">
+      Scenario
+      <select id="presetSelect"></select>
+    </label>
+    <label class="vanilla-toggle" title="Hide niche/bespoke customisations and show only a plain-vanilla ISDA + CSA for ease">
+      <input type="checkbox" id="vanillaModeToggle" />
+      Vanilla ISDA + CSA only
+    </label>
+    <label class="vanilla-scope-label" id="vanillaScopeWrap" title="When Vanilla mode is on, choose whether the CSA sections are shown">
+      Scope
+      <select id="vanillaScopeSelect">
+        <option value="isdaCsa">Vanilla ISDA + CSA</option>
+        <option value="isdaOnly">Vanilla ISDA only</option>
+      </select>
+    </label>
+    <button id="focusModeBtn" class="btn btn-ghost" title="Choose exactly which clauses you want to tinker with; the rest stay hidden with their existing default values">Select Clauses…</button>
+    <div class="history-controls">
+      <button id="undoBtn" class="btn btn-ghost" title="Undo the last change" disabled>↶ Undo</button>
+      <button id="redoBtn" class="btn btn-ghost" title="Redo" disabled>↷ Redo</button>
+    </div>
+    <button id="compareBtn" class="btn btn-ghost" title="See exactly what differs between your current configuration and any preset or custom scenario">Compare…</button>
+    <button id="practiceBtn" class="btn btn-ghost" title="Negotiate a realistic scenario blind, then score your configuration against a pre-inputted market outcome">Negotiation Scenarios…</button>
+    <button id="stressTestBtn" class="btn btn-ghost" title="Trace how your current configuration performs in response to a market/credit event you select">What Breaks?…</button>
+    <button id="resetBtn" class="btn btn-ghost" title="Reset to blank configuration">Reset</button>
+    <button id="saveScenarioBtn" class="btn btn-ghost" title="Save current configuration under a name">Save As…</button>
+    <button id="exportJsonBtn" class="btn btn-ghost" title="Download the current configuration as a JSON file">Export JSON</button>
+    <button id="importBtn" class="btn btn-ghost" title="Import a file — pick which of the four import kinds you actually want">Import…</button>
+    <input type="file" id="importJsonInput" accept="application/json" hidden />
+    <input type="file" id="importPlaybookInput" accept="application/json" hidden />
+    <input type="file" id="importGuardrailsInput" accept="application/json" hidden />
+    <input type="file" id="importFavorabilityInput" accept="application/json" hidden />
+    <button id="mattersBtn" class="btn btn-ghost" title="Open, create, or switch between named scenarios — each with its own history and closing checklist">Saved Scenarios…</button>
+    <label class="preset-label" id="guardrailsWrap" title="Live guardrails: flags every card on the board as preferred, an acceptable fallback, or outside the guardrails — pick an existing guardrail set to activate">
+      Guardrails
+      <select id="guardrailsSelect">
+        <option value="">None</option>
+      </select>
+    </label>
+    <label class="preset-label" id="favorabilityWrap" title="Overrides this tool's built-in dealer/buy-side/neutral tag with someone else's judgment, wherever it's covered — changes the Risk Gauge score, board tags, and outputs, not just the display">
+      Favorability
+      <select id="favorabilitySelect">
+        <option value="">Built-in</option>
+      </select>
+    </label>
+  </div>
+</header>
+
+<section id="practiceBar" class="practice-bar hidden">
+  <div class="practice-bar-text">
+    <strong>Practicing:</strong> <span id="practiceBarLabel"></span>
+  </div>
+  <div class="practice-bar-actions">
+    <button id="practiceMandateBtn" class="btn btn-ghost btn-sm">Mandate…</button>
+    <button id="practiceScoreBtn" class="btn btn-primary btn-sm">Score My Negotiation</button>
+    <button id="practiceEndBtn" class="btn btn-ghost btn-sm">End Practice</button>
+  </div>
+</section>
+<section id="matterBar" class="matter-bar hidden">
+  <div class="matter-bar-text">
+    <strong>Scenario:</strong> <span id="matterBarLabel"></span>
+  </div>
+  <div class="matter-bar-actions">
+    <button id="matterSaveRoundBtn" class="btn btn-primary btn-sm">Save New Round</button>
+    <button id="matterHistoryBtn" class="btn btn-ghost btn-sm">History…</button>
+    <button id="matterChecklistBtn" class="btn btn-ghost btn-sm">Checklist…</button>
+    <button id="matterCloseBtn" class="btn btn-ghost btn-sm">Close Scenario</button>
+  </div>
+</section>
+<section id="guardrailsBar" class="guardrails-bar hidden">
+  <span id="guardrailsSummary"></span>
+</section>
+<section id="favorabilityBar" class="guardrails-bar hidden">
+  <span id="favorabilitySummary"></span>
+</section>
+
+<div class="sticky-header">
+<section class="gauge-bar" aria-label="Risk Balance Gauge">
+  <div class="gauge-wrap">
+    <div class="gauge-labels">
+      <span>Dealer-favorable</span>
+      <span>Neutral</span>
+      <span>Buy-side-favorable</span>
+    </div>
+    <div class="gauge-track">
+      <div id="gaugeFill" class="gauge-fill"></div>
+      <div id="gaugeMarker" class="gauge-marker"></div>
+      <div class="gauge-center-line"></div>
+    </div>
+    <div class="gauge-score" id="gaugeScoreLabel">Score: 0</div>
+  </div>
+  <div class="legend">
+    <span class="legend-item"><i class="swatch swatch-dealer"></i>Dealer-favorable</span>
+    <span class="legend-item"><i class="swatch swatch-buyside"></i>Buy-side-favorable</span>
+    <span class="legend-item"><i class="swatch swatch-neutral"></i>Neutral</span>
+    <span class="legend-item"><i class="swatch swatch-aggressive"></i>Aggressive / Non-standard</span>
+  </div>
+  <button id="helpBtn" class="btn btn-ghost gauge-help-btn" title="Show the quick introduction tour again">? Help</button>
+</section>
+</div>
+
+<main class="canvas" id="canvas">
+  <div class="quadrant" id="quadrant-frame" data-category="frame">
+    <h2 class="quadrant-title">Frame <span class="quadrant-sub">(Base)</span></h2>
+    <div class="piece-list" id="pieces-frame"></div>
+  </div>
+  <div class="quadrant" id="quadrant-core" data-category="core">
+    <h2 class="quadrant-title">Core <span class="quadrant-sub">(Credit / Triggers)</span></h2>
+    <div class="piece-list" id="pieces-core"></div>
+  </div>
+  <div class="quadrant" id="quadrant-attachments" data-category="attachments">
+    <h2 class="quadrant-title">Attachments <span class="quadrant-sub">(CSA)</span></h2>
+    <div class="piece-list" id="pieces-attachments"></div>
+  </div>
+  <div class="quadrant" id="quadrant-edge" data-category="edge">
+    <h2 class="quadrant-title">Edge <span class="quadrant-sub">(Ops / Tax)</span></h2>
+    <div class="piece-list" id="pieces-edge"></div>
+  </div>
+</main>
+
+<section class="inserts-tray" aria-label="Bespoke Inserts">
+  <h2 class="quadrant-title">Inserts <span class="quadrant-sub">(Bespoke)</span></h2>
+  <div class="piece-list piece-list-row" id="pieces-inserts"></div>
+</section>
+
+<section class="flags-panel" aria-label="Compatibility &amp; Leverage Flags">
+  <h2 class="quadrant-title">Compatibility Engine <span class="quadrant-sub">live checks</span></h2>
+  <div id="flagsList" class="flags-list">
+    <p class="flags-empty">No conflicts detected.</p>
+  </div>
+</section>
+
+<section class="outputs-bar">
+  <button class="btn btn-primary" id="btnTermSheet">Generate Term Sheet</button>
+  <button class="btn btn-primary" id="btnFallback">Generate Fallback Matrix</button>
+  <button class="btn btn-primary" id="btnDefense">Generate Defense Guide</button>
+  <button class="btn btn-primary" id="btnSchedule" title="Full-form ISDA Schedule &amp; CSA in proper legal drafting language, built from every applicable election: available as Markdown (.md) and Word (.docx). Also includes an option to redline against other scenarios.">Generate Schedule (.md / .docx)</button>
+  <button class="btn btn-primary" id="btnSummary" title="A short, visually formatted summary of only the elections that depart from this tool's defaults">Generate Elections Summary</button>
+  <button class="btn btn-ghost" id="dealDetailsBtn" title="Optional party names and execution date for the generated Schedule — leave any field blank to keep its bracketed placeholder">Deal Details…</button>
+</section>
+
+<div id="dealDetailsOverlay" class="modal-overlay hidden">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>Deal Details</h3>
+        <div class="modal-subtitle">Optional — fills in the generated Schedule's preamble with party names and details. Leave any field blank to keep its bracketed placeholder (e.g. "[DEALER LEGAL NAME]").</div>
+      </div>
+      <button class="modal-close" id="dealDetailsClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <label class="field-hint" for="dealDetailsDealerName">Dealer legal name (Party A)</label>
+      <input type="text" id="dealDetailsDealerName" class="notes-textarea" placeholder="e.g., Valoris Investment Bank PLC" />
+      <br /><br />
+      <label class="field-hint" for="dealDetailsCounterpartyName">Counterparty legal name (Party B)</label>
+      <input type="text" id="dealDetailsCounterpartyName" class="notes-textarea" placeholder="e.g., Apex Global Macro Master Fund Ltd" />
+      <br /><br />
+      <label class="field-hint" for="dealDetailsAgreementDate">Agreement date</label>
+      <input type="date" id="dealDetailsAgreementDate" class="notes-textarea" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="dealDetailsCancel">Cancel</button>
+      <button class="btn btn-primary" id="dealDetailsSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="importOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>Import</h3>
+        <div class="modal-subtitle">All four read a JSON file, but do four completely different things with it — pick the one that matches what you actually want.</div>
+      </div>
+      <button class="modal-close" id="importClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="import-option-list">
+        <div class="import-option-card">
+          <div class="import-option-card-text">
+            <h4>Import JSON</h4>
+            <p class="import-does-what">Replaces your current board, right now.</p>
+            <p>Loads a previously exported configuration onto the board, overwriting whatever is on screen. Use this to resume work you saved earlier. (Undo can bring your prior board back if this was a mistake.)</p>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="importJsonOption">Choose File…</button>
+        </div>
+        <div class="import-option-card">
+          <div class="import-option-card-text">
+            <h4>Import Comparison Scenario</h4>
+            <p class="import-does-what">Adds a comparison target. Your board is untouched.</p>
+            <p>Adds a single named position (one target value per clause) to your custom-scenario library. Use this to bring in someone else's negotiating position — a firm's house standard, a counterparty's known ask — so it shows up in the Scenario dropdown, Compare, Schedule Redline, and Negotiation Scenarios. It is a fixed target: nothing is flagged live on your board.</p>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="importPlaybookOption">Choose File…</button>
+        </div>
+        <div class="import-option-card">
+          <div class="import-option-card-text">
+            <h4>Import Guardrails</h4>
+            <p class="import-does-what">Flags your board live, as you edit. Your board is untouched.</p>
+            <p>Adds a tiered rule set — a preferred value <em>and</em> acceptable fallbacks per clause, not just one target. Once picked from the "Guardrails" dropdown, every card on the board is tagged Preferred / Fallback / Outside Guardrails in real time, before you ever ask to be scored.</p>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="importGuardrailsOption">Choose File…</button>
+        </div>
+        <div class="import-option-card">
+          <div class="import-option-card-text">
+            <h4>Import Favorability Ruleset</h4>
+            <p class="import-does-what">Overrides this tool's built-in polarity. Your board is untouched.</p>
+            <p>This tool's own dealer/buy-side/neutral tag on each clause option is an editorial judgment, not a fact. A favorability ruleset lets someone substitute their own judgment — once picked from the "Favorability" dropdown, it actually changes the Risk Gauge score, board tags, and outputs for every clause it covers, not just how they're displayed. Coverage can be partial: anything the file doesn't mention keeps this tool's built-in tag.</p>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="importFavorabilityOption">Choose File…</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="importDone">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h3 id="modalTitle">Edit</h3>
+      <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+      <button class="btn btn-primary" id="modalSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="outputOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3 id="outputTitle">Output</h3>
+        <div class="modal-subtitle" id="outputSubtitle"></div>
+        <label class="preset-label hidden" id="scheduleRedlineRow" title="Shows the Schedule as a redline against another scenario where unchanged clauses render normally and changed/added/removed clauses are called out. If downloaded as a Word document, it is compatible with track changes.">
+          Redline against
+          <select id="scheduleRedlineSelect"></select>
+        </label>
+      </div>
+      <button class="modal-close" id="outputClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="outputBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="outputCopy">Copy to Clipboard</button>
+      <button class="btn btn-ghost" id="outputPrint" title="Opens your browser's print dialog — choose &quot;Save as PDF&quot; as the destination to export a PDF">Print / Export PDF</button>
+      <button class="btn btn-ghost" id="outputDownload">Download</button>
+      <button class="btn btn-ghost hidden" id="outputDownloadDocx">Download Word (.docx)</button>
+      <button class="btn btn-primary" id="outputDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="focusOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>Select Clauses to Tinker With</h3>
+        <div class="modal-subtitle">Some basic, commonly-negotiated clauses are pre-checked to start — add anything else you want to tinker with. Unchecked clauses are hidden from the board-view and left at their default values; be aware that they still count toward the risk score and appear in outputs.</div>
+      </div>
+      <button class="modal-close" id="focusClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="focus-toolbar">
+        <button class="btn btn-ghost" id="focusSelectAll">Select All</button>
+        <button class="btn btn-ghost" id="focusSelectNone">Select None</button>
+        <button class="btn btn-ghost" id="focusShowAll">Show All Clauses (clear filter)</button>
+      </div>
+      <div id="focusFieldList" class="focus-field-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="focusCancel">Cancel</button>
+      <button class="btn btn-primary" id="focusApply">Apply</button>
+    </div>
+  </div>
+</div>
+
+<div id="tutorialOverlay" class="modal-overlay hidden">
+  <div class="modal tutorial-modal" role="dialog" aria-modal="true">
+    <div class="tutorial-step-count" id="tutorialStepCount"></div>
+    <h3 id="tutorialTitle"></h3>
+    <p id="tutorialBody"></p>
+    <div class="tutorial-dots" id="tutorialDots"></div>
+    <div class="tutorial-footer">
+      <button class="btn btn-ghost" id="tutorialSkip">Skip</button>
+      <div class="tutorial-nav">
+        <button class="btn btn-ghost" id="tutorialBack">Back</button>
+        <button class="btn btn-primary" id="tutorialNext">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="compareOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>Compare Configurations</h3>
+        <div class="modal-subtitle">Only clauses currently visible on the board (per Vanilla mode / Select Clauses) are compared, and only rows that actually differ are shown.</div>
+      </div>
+      <button class="modal-close" id="compareClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <label class="preset-label">
+        Compare current configuration against
+        <select id="compareTargetSelect"></select>
+      </label>
+      <div id="compareResults" class="compare-results"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="compareDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="practiceOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>Negotiation Scenarios</h3>
+        <div class="modal-subtitle">Pick a realistic counterparty scenario and which side you're advising. The board resets to its initial blank slate. Configure it as you'd actually negotiate, then use "Score My Negotiation" to compare against a vetted market outcome for that scenario and know where you differ.</div>
+      </div>
+      <button class="modal-close" id="practiceClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="practiceScenarioList" class="practice-scenario-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="practiceCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="practiceScoreOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>Negotiation Scorecard</h3>
+        <div class="modal-subtitle" id="practiceScoreSubtitle"></div>
+      </div>
+      <button class="modal-close" id="practiceScoreClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="practiceScoreResults" class="compare-results"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="practiceScoreDone">Keep Negotiating</button>
+    </div>
+  </div>
+</div>
+
+<div id="stressTestOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>What Breaks? — Stress Test Simulator</h3>
+        <div class="modal-subtitle">Trace a market/credit event through your <em>current board configuration</em> to see exactly which clauses fire, in order, and which stay silent because nothing was negotiated to catch this case.</div>
+      </div>
+      <button class="modal-close" id="stressTestClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <label class="preset-label">
+        Event
+        <select id="stressEventSelect"></select>
+      </label>
+      <p class="modal-subtitle" id="stressEventBlurb"></p>
+      <div id="stressEventInputs" class="stress-inputs"></div>
+      <button class="btn btn-primary" id="stressRunBtn">Run Simulation</button>
+      <div id="stressResults" class="stress-results"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="stressTestDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="mattersOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>Saved Scenarios</h3>
+        <div class="modal-subtitle">A saved scenario is one live deal — its own round history and closing checklist, separate from the scratch board. Opening a saved scenario loads its latest round onto the board.</div>
+      </div>
+      <button class="modal-close" id="mattersClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="matter-new-form">
+        <input type="text" id="newMatterName" placeholder="Scenario name, e.g. &quot;Acme Corp — ISDA renegotiation&quot;" />
+        <input type="text" id="newMatterCounterparty" placeholder="Counterparty (optional)" />
+        <input type="date" id="newMatterCloseDate" title="Target close date (optional)" />
+        <button class="btn btn-primary" id="newMatterBtn">New Scenario</button>
+      </div>
+      <div id="mattersList" class="matters-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="mattersDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="matterHistoryOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>Round History</h3>
+        <div class="modal-subtitle" id="matterHistorySubtitle"></div>
+      </div>
+      <button class="modal-close" id="matterHistoryClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="matterHistoryList" class="round-history-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="matterHistoryDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="matterChecklistOverlay" class="modal-overlay hidden">
+  <div class="modal modal-wide" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div>
+        <h3>Closing Checklist</h3>
+        <div class="modal-subtitle">Built from the "Documents to be Delivered" election on the board. Track receipt and a due date for each. This doesn't change the board itself.</div>
+      </div>
+      <button class="modal-close" id="matterChecklistClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="matterChecklistBody"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="matterChecklistDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<aside id="isdaRefPanel" class="isda-ref-panel" aria-label="ISDA Reference">
+  <div class="isda-ref-header">ISDA Reference</div>
+  <div class="isda-ref-body" id="isdaRefBody">
+    <p class="isda-ref-placeholder">Hover or focus a piece to see the relevant ISDA Master Agreement / CSA section.</p>
+  </div>
+  <div class="isda-ref-footer">Indicative to the ISDA 2002 Master Agreement form — confirm against the executed form and Schedule.</div>
+</aside>
+
+<div id="customTooltip" class="custom-tooltip" role="tooltip"></div>
+
+<script src="docx-writer.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

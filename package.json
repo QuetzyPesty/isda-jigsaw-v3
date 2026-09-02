@@ -1,0 +1,9 @@
+{
+  "name": "isda-jigsaw-v3",
+  "version": "3.0.0",
+  "private": true,
+  "description": "ISDA Master Agreement Jigsaw v3 — visual Schedule & CSA configuration planner with Matters, round history, closing checklists, tiered playbook guardrails, favorability rulesets, and real Word tracked-change redlines",
+  "scripts": {
+    "start": "npx --yes http-server -p 8083 -c-1 ."
+  }
+}
