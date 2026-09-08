@@ -15,6 +15,12 @@ try it out on quetzypesty.github.io/isda-jigsaw-v3
 
 Or
 
+git clone https://github.com/QuetzyPesty/isda-jigsaw-v3.git
+cd isda-jigsaw-v3
+
+
+Then:
+
 Any static file server works. For example:
 
 ```bash
