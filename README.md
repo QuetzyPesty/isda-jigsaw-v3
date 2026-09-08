@@ -11,6 +11,10 @@ Static site, no build step, no server-side code. Everything runs in the browser 
 
 ## Run it
 
+try it out on quetzypesty.github.io/isda-jigsaw-v3
+
+Or
+
 Any static file server works. For example:
 
 ```bash
@@ -20,11 +24,8 @@ or if you have Python installed
 ```
 python -m http.server 8083.
 ```
-or 
 
 Then open `http://localhost:8083`.
-
-Or try it out on quetzypesty.github.io/isda-jigsaw-v3
 
 ## Files
 
