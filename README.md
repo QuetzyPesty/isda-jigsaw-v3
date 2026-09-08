@@ -1,8 +1,13 @@
 # ISDA Jigsaw v3
 
-A visual planner for ISDA Master Agreement / CSA negotiations. Configure clauses on a board, see a live dealer/buy-side risk score, generate a full-form Schedule (Markdown or Word with real tracked changes), practice negotiating against researched market scenarios, and run a "what breaks?" stress test against your current position.
+A visual planner for ISDA Master Agreement negotiations.
+- Configure clauses on a board,
+- see a live dealer/buy-side risk score,
+- generate a full-form Schedule (Markdown or Word with real tracked changes),
+- practice negotiating against researched market scenarios,
+-  "what breaks?" hypothetical stress test against your current position.
 
-Static site, no build step, no server-side code. Everything runs in the browser and saves to `localStorage` (private to each visitor's own browser — nothing is shared between people).
+Static site, no build step, no server-side code. Everything runs in the browser and saves to your `localStorage` (private to each visitor's own browser — nothing is shared between people).
 
 ## Run it
 
@@ -11,8 +16,15 @@ Any static file server works. For example:
 ```bash
 npx http-server -p 8083 -c-1 .
 ```
+or if you have Python installed
+```
+python -m http.server 8083.
+```
+or 
 
 Then open `http://localhost:8083`.
+
+Or try it out on quetzypesty.github.io/isda-jigsaw-v3
 
 ## Files
 
