@@ -1,0 +1,19 @@
+{
+  "name": "Dealer Trading & Credit Desk View",
+  "description": "Reflects a sell-side trading/credit desk's practical read of clauses this tool's built-in view calls neutral: it weighs who actually administers a mechanic day-to-day, not just who a clause's text formally binds. It argues single-determining-party close-out and 'joint' valuation both leave practical control with the dealer's own operations desk, and that even a standard (not tight) concentration cap functions as a real credit-risk protection for the dealer, not a neutral default.",
+  "overrides": {
+    "core": {
+      "closeoutMethodology": {
+        "closeOutAmount2002": "dealer"
+      }
+    },
+    "attachments": {
+      "valuationAgent": {
+        "jointDisclosed": "dealer"
+      },
+      "concentrationLimits": {
+        "standard": "dealer"
+      }
+    }
+  }
+}

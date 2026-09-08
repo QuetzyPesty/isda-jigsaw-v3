@@ -332,6 +332,8 @@ body {
 .tutorial-dots { display: flex; gap: 6px; margin: 18px 0 4px; }
 .tutorial-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
 .tutorial-dots span.active { background: var(--note); }
+.tutorial-docs-link { display: block; font-size: 12px; color: var(--note); text-decoration: none; margin-top: 4px; }
+.tutorial-docs-link:hover { text-decoration: underline; }
 .tutorial-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
 .tutorial-nav { display: flex; gap: 8px; }
 .modal-header {

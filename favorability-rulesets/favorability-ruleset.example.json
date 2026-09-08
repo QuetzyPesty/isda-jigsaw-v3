@@ -1,20 +1,20 @@
 {
   "name": "Buy-side Counsel View (example)",
+  "description": "Reflects arguments buy-side counsel commonly raises about three clauses this tool's built-in view calls neutral. It treats Close-out Amount (2002) as a real, if partial, win relative to the 1992 Loss standard it replaced — even though this tool's own baseline treats it as neutral in absolute terms. It also treats two 'neutral' fallback standards as functionally still dealer-favorable in practice: a recallable (rather than prohibited) rehypothecation right, given how often 'recall' proved slow or unenforceable in real dealer insolvencies (Lehman, MF Global); and an undefined 'reasonable time' fish-or-cut-bait standard, which in practice imposes little real constraint on a dealer's termination timing absent a fixed deadline.",
   "overrides": {
     "core": {
       "closeoutMethodology": {
         "closeOutAmount2002": "buyside"
-      },
-      "aet": {
-        "yes": { "favorsA": "dealer", "favorsB": "buyside" }
       }
     },
     "attachments": {
-      "haircutLevel": {
-        "aggressive": "neutral"
-      },
-      "valuationAgent": {
-        "dealerSole": "buyside"
+      "rehypothecationRights": {
+        "recallable": "dealer"
+      }
+    },
+    "inserts": {
+      "fishOrCutBait": {
+        "reasonable": "dealer"
       }
     }
   }

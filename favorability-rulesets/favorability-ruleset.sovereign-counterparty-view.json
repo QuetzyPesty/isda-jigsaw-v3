@@ -1,0 +1,16 @@
+{
+  "name": "Sovereign / State-Owned Counterparty View",
+  "description": "Reflects how a sovereign, central bank, or state-owned entity's counsel would weigh two clauses this tool's built-in view calls neutral, specifically because of immunity and asset-title concerns that don't apply to an ordinary corporate counterparty: keeping dispute resolution in a home-jurisdiction seat rather than a foreign court, and keeping legal title to posted collateral (a pledge) rather than transferring it outright.",
+  "overrides": {
+    "frame": {
+      "disputeResolution": {
+        "indianArbitration": "buyside"
+      }
+    },
+    "attachments": {
+      "csaStructure": {
+        "vmPledgeNY": "buyside"
+      }
+    }
+  }
+}
